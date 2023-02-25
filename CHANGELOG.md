@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v1.0.4
+
+
+### 🩹 Fixes
+
+  - H3 import in proxy mode (37dceae)
+
+### ❤️  Contributors
+
+- U <oleghalinua@gmail.com>
+
 ## v1.0.3
 
 

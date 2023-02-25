@@ -1,6 +1,6 @@
 {
   "name": "nuxt-artisan",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Auth your users using Laravel Sanctum & Nuxt",
   "license": "MIT",
   "type": "module",
