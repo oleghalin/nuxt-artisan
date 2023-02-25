@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v1.0.3
+
+
+### 🩹 Fixes
+
+  - `useRuntimeConfig` import in proxy mode (c29191f)
+
+### ❤️  Contributors
+
+- U <oleghalinua@gmail.com>
+
 ## v1.0.2
 
 
