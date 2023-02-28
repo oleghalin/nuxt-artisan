@@ -8,7 +8,7 @@ export default defineAppConfig({
       github: 'oleghalin/nuxt-artisan'
     },
     github: {
-      repo: 'oleghalin/nuxt-artisan',
+      repo: 'oleghalin/nuxt-artisan'
     },
     aside: {
       level: 0,
