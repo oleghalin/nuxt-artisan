@@ -1,7 +1,8 @@
+import { FetchError } from 'ofetch'
 import { defineNuxtRouteMiddleware, useLaravelAuth, navigateTo, useRuntimeConfig } from '#imports'
 
 export default defineNuxtRouteMiddleware(async () => {
-  const { stateCookie, isLoggedIn, fetchUser } = useLaravelAuth()
+  const { stateCookie, isLoggedIn, fetchUser, user } = useLaravelAuth()
 
   const config = useRuntimeConfig().public.artisan
 
@@ -9,8 +10,13 @@ export default defineNuxtRouteMiddleware(async () => {
     try {
       await fetchUser()
     } catch (error) {
-      stateCookie.value = false
-      return navigateTo(config.redirects.middlewares.auth)
+      if (error instanceof FetchError && error.status && [401, 419].includes(error.status)) {
+        stateCookie.value = false
+        user.value = null
+        return navigateTo(config.redirects.middlewares.auth)
+      }
+
+      throw error
     }
   }
 })

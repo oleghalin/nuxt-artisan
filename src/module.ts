@@ -23,7 +23,10 @@ export interface ModuleOptions {
   },
   endpoints: {
     login?: string,
-    user?: string,
+    user?: {
+      url?: string,
+      key?: string | false
+    },
     logout?: string,
   }
 }
@@ -54,7 +57,10 @@ export default defineNuxtModule<ModuleOptions>({
     },
     endpoints: {
       login: 'login',
-      user: 'user',
+      user: {
+        url: 'user',
+        key: 'data'
+      },
       logout: 'logout'
     }
   },

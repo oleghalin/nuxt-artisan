@@ -20,9 +20,11 @@ export const useLaravelAuth = () => {
       return
     }
 
-    const { data } = await useLaravelApi(config.endpoints.user)
+    const { data } = await useLaravelApi(config.endpoints.user.url)
 
-    user.value = data
+    const extractUserFromKey = config.endpoints.user.key
+
+    user.value = extractUserFromKey ? data.value[extractUserFromKey] : data.value
   }
 
   const login = async (body: ArtisanLoginCredentials) => {
