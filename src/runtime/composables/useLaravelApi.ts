@@ -1,6 +1,6 @@
 import { UseFetchOptions } from '#app'
 import { AsyncData } from '#app/composables/asyncData'
-import {normalizeURL, withTrailingSlash} from 'ufo'
+import {joinURL, normalizeURL, withTrailingSlash} from 'ufo'
 import { useCookie, useFetch, useRequestHeaders, useRuntimeConfig } from '#imports'
 
 export function useLaravelApi (uri: string, opts?: UseFetchOptions<any>): AsyncData<any, any> {
@@ -12,7 +12,7 @@ export function useLaravelApi (uri: string, opts?: UseFetchOptions<any>): AsyncD
 
   const h3Headers = useRequestHeaders()
 
-  return useFetch(normalizeURL(withTrailingSlash(target) + uri), {
+  return useFetch(joinURL(target, uri), {
     ...opts,
     credentials: 'include',
     headers: {

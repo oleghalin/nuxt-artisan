@@ -1,6 +1,18 @@
 import { fileURLToPath } from 'url'
 import { defineNuxtModule, createResolver, addServerHandler, useLogger, addRouteMiddleware } from '@nuxt/kit'
 import { defu } from 'defu'
+import { joinURL, parseURL } from 'ufo'
+
+type PartialRecord<K extends keyof any, T> = {
+  [P in K]?: T;
+};
+
+type LaravelIframeApps = 'horizon' | 'telescope' | 'nova'
+interface LaravelAppDescription {
+  name: string;
+  icon: string;
+  key: LaravelIframeApps;
+}
 
 export interface ModuleOptions {
   proxy: boolean;
@@ -28,6 +40,10 @@ export interface ModuleOptions {
       key?: string | false
     },
     logout?: string,
+  },
+  devtools?: {
+    enabled: boolean,
+    apps: PartialRecord<LaravelIframeApps, string | boolean>
   }
 }
 
@@ -62,6 +78,14 @@ export default defineNuxtModule<ModuleOptions>({
         key: 'data'
       },
       logout: 'logout'
+    },
+    devtools: {
+      enabled: false,
+      apps: {
+        horizon: false,
+        telescope: false,
+        nova: false
+      }
     }
   },
   setup (options, nuxt) {
@@ -122,5 +146,48 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.hook('imports:dirs', (dirs) => {
       dirs.push(resolve(runtimeDir, 'composables'))
     })
+
+    const resolvedUrl = parseURL(options.url)
+    const baseBackendUrl = `${resolvedUrl.protocol!}//` + resolvedUrl.host!
+
+    if (options.devtools?.enabled) {
+      const ecosystemApps: Array<LaravelAppDescription> = [
+        {
+          name: 'Laravel Telescope',
+          icon: 'mdi:telescope',
+          key: 'telescope'
+        },
+        {
+          name: 'Laravel Horizon',
+          icon: 'cib:laravel-horizon',
+          key: 'horizon'
+        },
+        {
+          name: 'Laravel Nova',
+          icon: 'cib:laravel-nova',
+          key: 'nova'
+        }
+      ]
+
+      // @ts-ignore suppress until nuxt adds devtools typings for hooks
+      nuxt.hook('devtools:customTabs', (tabs: Array<unknown>) => {
+        for (const index in ecosystemApps) {
+          const app = ecosystemApps[index]
+          if (options.devtools?.apps[app.key]) {
+            const route = typeof options.devtools.apps[app.key] === 'string' ? String(options.devtools.apps[app.key]) : app.key
+
+            tabs.push({
+              name: `nuxt-artisan-${app.key}`,
+              title: app.name,
+              icon: app.icon,
+              view: {
+                type: 'iframe',
+                src: joinURL(baseBackendUrl, route)
+              }
+            })
+          }
+        }
+      })
+    }
   }
 })
